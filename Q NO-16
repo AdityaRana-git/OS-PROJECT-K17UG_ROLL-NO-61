@@ -1,75 +1,56 @@
-#include<stdio.h>
+#include<stdio.h> 
 #include<conio.h>
-void main()
-{
- int TS,pid[10],need[10],WT[10],TAT[10],i,j,n,n1;
- int BT[10],flag[10],TTAT=0,TWT=0;
- float AWT,ATAT;
-printf("\t ROUND ROBIN SCHEDULING \n"); 
-printf("Enter the number of Processes:- \t");
- scanf("%d",&n);
- n1=n;
- printf("\n Enter the Timeslice (in ms):- \t");
- scanf("%d",&TS);
- for(i=1;i<=n;i++)
-{
-printf("\n Enter the process ID:- %d",i);
-scanf("%d","\t",&pid[i]);
-printf("\n Enter the Burst Time for the process:-");
-scanf("%d",&BT[i]);
-need[i]=BT[i];
+int main() 
+{ 
+ 
+  int cont,j,n,time,remaining,flag=0,t_q; 
+  int w_q=0,ta_t=0,at[10],bt[10],rt[10];
+  printf("\t\t\t ROUND ROBIN SCHEDULING\n\n");
+  printf("Enter Total  number of Process to be processed:\t "); 
+  scanf("%d",&n); 
+  remaining=n; 
+  for(cont=0;cont<n;cont++) 
+  { 
+    printf("Enter Arrival Time and Burst Time for Process Process Number %d :",cont+1); 
+    scanf("%d\t",&at[cont]); 
+    scanf("%d",&bt[cont]); 
+    rt[cont]=bt[cont]; 
+  }
+  printf("\t\tROUND ROBIN SCHEDULING\n");
+  printf("Enter Time Quantum:\t"); 
+  scanf("%d",&t_q); 
+  printf("\nProcess|Turnaround Time|Waiting Time\n\n"); 
+  for(time=0,cont=0;remaining!=0;) 
+  { 
+    if(rt[cont]<=t_q && rt[cont]>0) 
+    { 
+      time+=rt[cont]; 
+      rt[cont]=0; 
+      flag=1; 
+    } 
+    else if(rt[cont]>0) 
+    { 
+      rt[cont]-=t_q; 
+      time+=t_q; 
+    } 
+    if(rt[cont]==0 && flag==1) 
+    { 
+      remaining--; 
+      printf("P[%d]\t|\t%d\t|\t%d\n",cont+1,time-at[cont],time-at[cont]-bt[cont]); 
+      w_q+=time-at[cont]-bt[cont]; 
+      ta_t+=time-at[cont]; 
+      flag=0; 
+      
+    } 
+    if(cont==n-1) 
+      cont=0; 
+    else if(at[cont+1]<=time) 
+      cont++; 
+    else 
+      cont=0; 
+  } 
+  printf("\n\nAverage Waiting Time= %f\n",w_q*1.0/n); 
+  printf("\nAverage Turnaround Time = %f",ta_t*1.0/n); 
+  
+  return 0; 
 }
-for(i=1;i<=n;i++)
-{
-  flag[i]=1;
-  WT[i]=0;
- }
-while(n!=0)
- {
-   for(i=1;i<=n;i++)
-   {
-     if(need[i]>=TS)
-     {
-	 for(j=1;j<=n;j++)
-       {
-	  if((i!=j)&&(flag[i]==1)&&(need[j]!=0))
-	  WT[j]+=TS;
-       }
- need[i]-=TS;
- if(need[i]==0)
-{
-flag[i]=0;
-n--;
-}
-}
-else
-{
-  for(j=1;j<=n;j++)
-      {
-	  if((i!=j)&&(flag[i]==1)&&(need[j]!=0))
-	  WT[j]+=need[i];
-	         }
-need[i]=0;
-n--;
-flag[i]=0;
-}
- }
-}
-for(i=1;i<=n1;i++)
-{
-TAT[i]=WT[i]+BT[i];
-TWT=TWT+WT[i];
-TTAT=TTAT+TAT[i];
-}
-AWT=(float)TWT/n1;
-ATAT=(float)TTAT/n1;
-printf("\n\n ROUND ROBIN SCHEDULING ALGORITHM \n\n");
-printf("\n\n Process \t Process ID  \t BurstTime \t Waiting Time \t TurnaroundTime \n ");
-for(i=1;i<=n1;i++)
-{
-printf("\n %5d \t\t %5d \t\t %5d \t\t %5d \t\t %5d \n", i,pid[i],BT[i],WT[i],TAT[i]);
-}
-printf("\n The average Waiting Time=%d",AWT);
-printf("\n The average Turn around Time=%d",ATAT);
-getch();
-}   
